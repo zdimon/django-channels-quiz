@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'drf_yasg',
     'channels',
-    'connection'
+    'connection',
+    'quiz'
 ]
 
 ASGI_APPLICATION = "server.channels_app.application"
@@ -134,3 +135,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+FIXTURES_PATH = os.path.join(BASE_DIR, '../fixtures')

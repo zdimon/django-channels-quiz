@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+</head>
+
+<body>
+    <h1>Quiz</h1>
+    <input type="text" id="text" />
+    <button id="sendButton">Send message by JS</button>nt
+    <a href="/send" target="_blank">Send message from server</a>
+    <div id="messages"></div>
+<script>
+    
+    var timer = null;
+    connect = () => {
+        
+        clearInterval(timer);
+        webSocket = new WebSocket('ws://localhost:7777/quiz/');
+
+        webSocket.onerror = (evt) => {
+            timer = setTimeout(connect,1000);
+        }
+
+        webSocket.onmessage = (event) => {
+            var message = JSON.parse(event.data)
+            $('#messages').append(message.message);
+        }
+
+        webSocket.onclose =  (event) => {
+            console.log('Close connection');
+            timer = setTimeout(connect,1000);
+        };
+
+        webSocket.onopen =  (event) => {
+            console.log('Connection established');
+        };
+    }
+
+
+
+
+    $('#sendButton').on('click', () => {
+        var message = $('#text').val();
+        var data = {
+            'type': 'test_hendler',
+            'data': message
+        }
+        webSocket.send(JSON.stringify(data));
+    })
+
+    connect();
+
+</script>
+</body>
+
+</html>
