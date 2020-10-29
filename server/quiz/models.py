@@ -124,7 +124,25 @@ class RoomMessage(models.Model):
         if not self.pk:
            super(RoomMessage, self).save(*args, **kwargs)
            self.send_quiz_message(self.pk)
+           # clearing messages
+           RoomMessage.clear_messages()
         super(RoomMessage, self).save(*args, **kwargs)
+
+    @staticmethod
+    def clear_messages():
+        cnt = RoomMessage.objects.all().count()
+        if cnt > 10:
+            for m in RoomMessage.objects.all().order_by('id')[10:]:
+                print(m)
+                channel_layer = get_channel_layer()
+                from quiz.api.serializers.message import QuizRoomMessageSerializer
+                from connection.models import SocketConnection
+                for con in SocketConnection.objects.all():
+                    payload =  { \
+                                'type': 'quiz_delete_message', \
+                                'message': QuizRoomMessageSerializer(m).data \
+                            }        
+                    async_to_sync(channel_layer.send)(con.sid, payload)
         
         
 

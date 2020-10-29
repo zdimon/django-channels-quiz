@@ -57,3 +57,10 @@ class QuizConsumer(WebsocketConsumer):
             'message': event['message'] \
         }
         self.send(text_data=json.dumps(message))
+
+    def quiz_delete_message(self,event):
+        message = {  \
+            'type': 'delete_message', \
+            'message': event['message'] \
+        }
+        self.send(text_data=json.dumps(message))
