@@ -1,5 +1,5 @@
 from django.contrib import admin
-from quiz.models import Theme, Question, Room, RoomMessage, RoomQuestion, Smile, Sticker
+from quiz.models import Theme, Question, RoomMessage, Smile, Sticker, Player
 
 class ThemeAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug')
@@ -12,42 +12,23 @@ class QuestionAdmin(admin.ModelAdmin):
 
 admin.site.register(Question, QuestionAdmin)
 
-class RoomAdmin(admin.ModelAdmin):
-    list_display = (
-        'type',
-        'created_at',
-        'is_done',
-        'token',
-        'current_question'
-    )
-
-admin.site.register(Room, RoomAdmin)
 
 class RoomMessageAdmin(admin.ModelAdmin):
     list_display = (
         'is_right',
         'is_service',
-        'room',
         'text',
         'created_at',
+        'playername'
     )
 
 admin.site.register(RoomMessage, RoomMessageAdmin)
 
 
-class RoomQuestionAdmin(admin.ModelAdmin):
-    list_display = (
-        'question',
-        'room',
-        'is_done'
-    )
-
-admin.site.register(RoomQuestion, RoomQuestionAdmin)
-
 
 class SmileAdmin(admin.ModelAdmin):
     list_display = (
-        'smile',
+        'image',
     )
 
 admin.site.register(Smile, SmileAdmin)
@@ -55,7 +36,17 @@ admin.site.register(Smile, SmileAdmin)
 
 class StickerAdmin(admin.ModelAdmin):
     list_display = (
-        'sticker',
+        'get_image_tag',
     )
 
 admin.site.register(Sticker, StickerAdmin)
+
+class PlayerAdmin(admin.ModelAdmin):
+    list_display = (
+        'name',
+        'sticker',
+        'account'
+    )
+    
+
+admin.site.register(Player, PlayerAdmin)

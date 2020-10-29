@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.response import Response
 from rest_framework import generics
@@ -8,7 +8,18 @@ from rest_framework.mixins import ListModelMixin
 
 from quiz.api.serializers.message import QuizRoomMessageSerializer, MessageRequestSerializer
 from server.serializers.noauth import NoAuthSerializer
-from quiz.models import Room, RoomMessage
+from quiz.models import  RoomMessage
+
+class MessageListView(APIView):
+    permission_classes = [AllowAny]
+    @swagger_auto_schema( 
+        responses={200: QuizRoomMessageSerializer, 401: NoAuthSerializer} )
+
+    def get(self, request):
+        #room = Room.objects.get(token=token)
+        messages = RoomMessage.objects.all()
+        return Response(QuizRoomMessageSerializer(messages, many=True).data)
+
 
 class GetRoomMessageView(APIView):
     permission_classes = [IsAuthenticated]
@@ -32,10 +43,8 @@ class CreateQuizMessageView(APIView):
         request_body=MessageRequestSerializer,
         responses={200: QuizRoomMessageSerializer, 401: NoAuthSerializer} )
     def post(self, request): 
-        room = Room.objects.get(token=request.data['room_token'])
         obj = RoomMessage()
-        obj.room = room
-        obj.user = request.user.userprofile
+        obj.playername = request.data['playername']
         obj.text = request.data['message']
         obj.check_answer()
         obj.save()

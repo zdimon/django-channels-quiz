@@ -36,3 +36,24 @@ class QuizConsumer(WebsocketConsumer):
             'message': 'test' \
         }
         self.send(text_data=json.dumps(message))
+
+    def quiz_message(self,event):
+        message = {  \
+            'type': 'message', \
+            'message': event['message'] \
+        }
+        self.send(text_data=json.dumps(message))
+
+    def quiz_new_question(self,event):
+        message = {  \
+            'type': 'new_question', \
+            'message': event['message'] \
+        }
+        self.send(text_data=json.dumps(message))
+
+    def quiz_update_account(self,event):
+        message = {  \
+            'type': 'update_account', \
+            'message': event['message'] \
+        }
+        self.send(text_data=json.dumps(message))

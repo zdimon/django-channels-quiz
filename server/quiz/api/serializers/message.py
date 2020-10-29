@@ -4,7 +4,7 @@ from quiz.models import RoomMessage
 
 class MessageRequestSerializer(serializers.Serializer):
     message = serializers.CharField()
-    room_token = serializers.CharField()
+    playername = serializers.CharField()
 
 
 class QuizRoomMessageSerializer(serializers.ModelSerializer):
@@ -15,6 +15,5 @@ class QuizRoomMessageSerializer(serializers.ModelSerializer):
             'id',
             'is_right',
             'is_service',
-            'room',
             'text',
             'created_at']

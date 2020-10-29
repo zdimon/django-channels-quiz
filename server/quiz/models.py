@@ -7,6 +7,11 @@ import uuid
 from server.celery import app
 import logging
 import random
+from django.conf import settings
+from django.utils.html import mark_safe
+import random
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 
 class Theme(models.Model):
     """
@@ -53,6 +58,7 @@ class Question(models.Model):
     answers = models.TextField(verbose_name=_(u"Answers"), default='', help_text=_('Divided by coma')) 
     is_published = models.BooleanField(default=True)
     order = models.IntegerField(help_text=_(u"Order"), default="1")
+    is_current = models.BooleanField(default=False)
 
     @property
     def is_edit(self):
@@ -60,62 +66,38 @@ class Question(models.Model):
 
     def get_answers(self):
         return self.answers
-        
-    # def check_answer(self,ans):
-    #     ans = ans.upper()
-    #     for a in self.answers_ru.split(','):
-    #         if ans == a.upper():
-    #             return True
-    #     for a in self.answers_en.split(','):
-    #         if ans == a.upper():
-    #             return True
-    #     return False        
+
+    def send_new_question_message(self):
+        channel_layer = get_channel_layer()
+        from quiz.api.serializers.question import QuestionSerializer
+        from connection.models import SocketConnection
+        for con in SocketConnection.objects.all():
+            payload =  { \
+                        'type': 'quiz_new_question', \
+                        'message': QuestionSerializer(self).data \
+                       }        
+            async_to_sync(channel_layer.send)(con.sid, payload)
+
+    @staticmethod
+    def make_rundom():
+        Question.objects.all().update(is_current=False)
+        cnt = Question.objects.all().count()
+        rnd = random.randint(1,cnt)
+        q = Question.objects.all()[rnd]
+        q.is_current = True
+        q.save()
+        q.send_new_question_message()
+        return q
+
+    @staticmethod
+    def get_current_question():
+        try:
+            return Question.objects.get(is_current=True)
+        except:
+            return Question.make_rundom()      
 
     def __str__(self):
         return self.question
-
-
-
-
-ROOM_TYPES = (
-        ('questionend', _('Till questions are fineshed.')),
-        ('infinite', _('Infinite quize (looping over questions).')),
-        ('custom', _('Custom. Defining question by author.'))
-    )
-
-class Room(models.Model):
-    '''
-        Викторины, которые активны в настоящее время. 
-        Используются для переодического опроса и перехода на новый вопрос, 
-        если вышло время ответа. 
-        Так же для завершения викторины по времени или по окончанию очереди вопросов.
-    '''
-   
-
-
-    type = models.CharField(verbose_name=_(u'Quiz type'), max_length=50, choices=ROOM_TYPES, default='infinite')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_(u'Created at'))
-    current_question = models.ForeignKey(Question, verbose_name=_(u'Cur question'), null=True, blank=True, on_delete=models.SET_NULL)
-    is_done = models.BooleanField(default=False)
-    token = models.CharField(help_text=_(u"Token"), max_length=100, db_index=True)
-
-    def __str__(self):
-        return self.token
- 
-    def save(self, **kwargs):
-        if not self.id:
-            self.token = 'current-room'
-        return super(Room, self).save(**kwargs)
-
-
-class RoomQuestion(models.Model):
-    '''
-        Вопросы комнаты
-    '''
-    question = models.ForeignKey(Question, verbose_name=_(u'Question'), on_delete=models.CASCADE)
-    is_done = models.BooleanField(default=False)
-    room = models.ForeignKey(Room, verbose_name=_(u'Room'), on_delete=models.CASCADE)
-
 
 class RoomMessage(models.Model):
     '''
@@ -123,51 +105,83 @@ class RoomMessage(models.Model):
     '''
     is_right = models.BooleanField(default=False)
     is_service = models.BooleanField(default=False)
-    room = models.ForeignKey(Room, verbose_name=_(u'Room'), on_delete=models.CASCADE)
     text = models.TextField(verbose_name=_(u'Text'))
     created_at = models.DateTimeField(auto_now_add=True)
+    playername = models.CharField(help_text=_(u"Name"), max_length=100)
 
     def check_answer(self):
-        answer = self.room.current_question.answers
-        if self.text.upper() == answer:
+        answer = Question.get_current_question()
+        if self.text.upper() == answer.get_answers():
             self.is_right = True
-            self.room.current_question=random.choice(Question.objects.all())
-
+            self.save()
+            Question.make_rundom()
+            # add user account
+            user = Player.objects.get(name=self.playername)
+            user.add_account()
 
     def save(self, *args, **kwargs):
+        
         if not self.pk:
-           self.token = self.room.token
+           super(RoomMessage, self).save(*args, **kwargs)
+           self.send_quiz_message(self.pk)
         super(RoomMessage, self).save(*args, **kwargs)
-        self.send_quiz_message(self.pk)
+        
+        
 
     @app.task
     def send_quiz_message(id):
         obj = RoomMessage.objects.get(pk=id)
-        print('Sending message %s' % id)
-        logging.info('Sending message %s' % id)
-        cent_client = CentClient()
-        from quiz.serializers.message import QuizRoomMessageSerializer
+        channel_layer = get_channel_layer()
+        from quiz.api.serializers.message import QuizRoomMessageSerializer
         from connection.models import SocketConnection
         for connection in SocketConnection.objects.all():
-            pass
-            token, created = Token.objects.get_or_create(user=connection.user)
             payload =  { \
                         'type': 'quiz_message', \
                         'message': QuizRoomMessageSerializer(obj).data \
                        }        
-            cent_client.send(token.key, payload)
+            async_to_sync(channel_layer.send)(connection.sid, payload)
     
 
 class Smile(models.Model):
-    smile = models.URLField(blank=False, verbose_name=_(u'URL Smile'), max_length=50)
+    image = models.ImageField(upload_to='smile')
+
+    @property
+    def get_url(self):
+        return settings.DOMAIN_URL+self.image.url
+
+    @property
+    def get_image_tag(self):
+        return mark_safe('<img src="%s" />' % self.get_url)
 
 class Sticker(models.Model):
-    sticker = models.URLField(blank=False, verbose_name=_(u'URL Sticker'), max_length=50)
+    image = models.ImageField(upload_to='sticker')
 
-class RoomMessageSmile(models.Model):
-    smile = models.ForeignKey(Smile, verbose_name=_(u'smile'), on_delete=models.CASCADE)
-    message = models.ForeignKey(RoomMessage, verbose_name=_(u'message'), on_delete=models.CASCADE)
+    @property
+    def get_url(self):
+        return settings.DOMAIN_URL+self.image.url
 
-class RoomMessageSticker(models.Model):
-    sticker = models.ForeignKey(Sticker, verbose_name=_(u'sticker'), on_delete=models.CASCADE)
-    message = models.ForeignKey(RoomMessage, verbose_name=_(u'message'), on_delete=models.CASCADE)
+    @property
+    def get_image_tag(self):
+        return mark_safe('<img src="%s" />' % self.get_url)
+
+    def __str__(self):
+        return self.get_image_tag
+
+
+class Player(models.Model):
+    name = models.CharField(help_text=_(u"Name"), max_length=100, unique=True)
+    sticker = models.ForeignKey(Sticker, verbose_name=_(u'sticker'), on_delete=models.SET_NULL, null=True, blank=True)
+    account = models.IntegerField(default=0)
+
+    def add_account(self):
+        self.account += 1
+        self.save()
+        channel_layer = get_channel_layer()
+        from quiz.api.serializers.player import PlayerSerializer
+        from connection.models import SocketConnection
+        for con in SocketConnection.objects.all():
+            payload =  { \
+                        'type': 'quiz_update_account', \
+                        'message': PlayerSerializer(self).data \
+                       }        
+            async_to_sync(channel_layer.send)(con.sid, payload)

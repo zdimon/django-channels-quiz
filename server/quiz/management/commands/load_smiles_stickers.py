@@ -4,6 +4,7 @@ from quiz.models import Room, RoomMessage, Smile, Sticker
 from server.settings import FIXTURES_PATH
 import os
 import json
+from django.core.files import File
 
 class Command(BaseCommand):
 
@@ -17,7 +18,9 @@ class Command(BaseCommand):
         files = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
         for f in files:
             smile = Smile()
-            smile.smile = os.path.join(path, f)
+            filepath = os.path.join(path, f)
+            with open(filepath, 'rb') as doc_file:
+                smile.image.save(f, File(doc_file), save=True)
             smile.save()
             
         #Loading stikcers to model 
@@ -25,5 +28,7 @@ class Command(BaseCommand):
         files = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
         for f in files:
             sticker = Sticker()
-            sticker.sticker = os.path.join(path, f)
+            filepath = os.path.join(path, f)
+            with open(filepath, 'rb') as doc_file:
+                sticker.image.save(f, File(doc_file), save=True)
             sticker.save()
