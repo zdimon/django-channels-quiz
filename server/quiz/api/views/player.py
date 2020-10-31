@@ -34,6 +34,7 @@ class JoinUserView(APIView):
         responses={200: JoinPlayerResponseSerializer} 
         )
     def post(self, request):
+        print(request.data)
         try:
             Player.objects.get(name=request.data['name'])
             return Response({'status': 1, 'message': 'This user already exists!'})

@@ -1,12 +1,10 @@
 from channels.routing import ProtocolTypeRouter, URLRouter
-from card.card_consumer import CardConsumer
 from quiz.quiz_consumer import QuizConsumer
 from django.urls import re_path
 from channels.auth import AuthMiddlewareStack
 
 
 websocket_urlpatterns = [
-    re_path(r'card/$', CardConsumer),
     re_path(r'quiz/$', QuizConsumer),
 ]
 

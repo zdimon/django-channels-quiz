@@ -37,7 +37,7 @@ class CreateQuizMessageView(APIView):
     Create a new message in the quiz room.
     '''
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     @swagger_auto_schema( 
         request_body=MessageRequestSerializer,

@@ -25,7 +25,7 @@ SECRET_KEY = 'yfwc4&gvr%8*ld8l60ysa3%k@f10aq+5)5=j+(j*(#vw_$gy#('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*', 'quiz.webmonstr.com']
 
 
 # Application definition
@@ -37,19 +37,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'card',
     'rest_framework',
     'rest_framework.authtoken',
     'drf_yasg',
     'channels',
     'connection',
-    'quiz'
+    'quiz',
+    'corsheaders'
 ]
 
 ASGI_APPLICATION = "server.channels_app.application"
 
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -58,6 +59,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'server.urls'
 
