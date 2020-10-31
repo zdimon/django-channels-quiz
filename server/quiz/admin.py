@@ -26,18 +26,21 @@ admin.site.register(RoomMessage, RoomMessageAdmin)
 
 
 
-class SmileAdmin(admin.ModelAdmin):
-    list_display = (
-        'image',
-    )
+# class SmileAdmin(admin.ModelAdmin):
+#     list_display = (
+#         'image',
+#     )
 
-admin.site.register(Smile, SmileAdmin)
+# admin.site.register(Smile, SmileAdmin)
 
 
 class StickerAdmin(admin.ModelAdmin):
     list_display = (
         'get_image_tag',
     )
+    def image_tag(self):
+        from django.utils.html import escape
+        return u'<img src="%s" />' % escape(self.image.url)
 
 admin.site.register(Sticker, StickerAdmin)
 
