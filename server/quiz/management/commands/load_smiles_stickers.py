@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.core.management.base import BaseCommand, CommandError
-from quiz.models import Room, RoomMessage, Smile, Sticker
+from quiz.models import RoomMessage, Smile, Sticker
 from server.settings import FIXTURES_PATH
 import os
 import json
