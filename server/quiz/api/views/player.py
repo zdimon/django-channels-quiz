@@ -37,9 +37,12 @@ class JoinUserView(APIView):
         print(request.data)
         try:
             Player.objects.get(name=request.data['name'])
-            return Response({'status': 1, 'message': 'This user already exists!'})
+            return Response({'status': 1, 'error': 'This user already exists!'})
         except:
-            sticker = Sticker.objects.get(pk=request.data['sticker_id'])
+            try:
+                sticker = Sticker.objects.get(pk=request.data['sticker_id'])
+            except:
+                return Response({'status': 1, 'error': 'Sticker not found!'})
             player = Player()
             player.name = request.data['name']
             player.sticker = sticker
