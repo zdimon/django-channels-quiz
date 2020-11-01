@@ -113,7 +113,7 @@ class RoomMessage(models.Model):
 
     @property
     def count_wrong(self):
-        return RoomMessage.objects.filter(is_right=Flase).count()
+        return RoomMessage.objects.filter(is_right=False).count()
 
     @staticmethod
     def check_wrong_answers():
