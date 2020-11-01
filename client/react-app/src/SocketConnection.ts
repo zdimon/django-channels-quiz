@@ -36,7 +36,7 @@ export class SocketConnection {
 
     this.websocket.onmessage = (message: any) => {
         let msg = JSON.parse(message.data)
-        console.log(msg);
+        // console.log(msg);
         if(msg.type === 'message') {
             this.newMessage$.next(msg.message);
         }
