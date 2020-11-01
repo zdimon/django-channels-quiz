@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // const serverUrl = 'http://localhost:7777/v1/quiz/';
-const serverUrl = 'http://quiz.webmonstr.com/v1/quiz/';
+const serverUrl = 'http://quizapi.webmonstr.com/v1/quiz/';
 
 
 

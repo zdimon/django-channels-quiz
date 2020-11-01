@@ -3,3 +3,4 @@ venv
 *.pyc
 server/db.sqlite3
 server/media
+server/server/local.py
