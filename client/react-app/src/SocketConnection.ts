@@ -24,7 +24,8 @@ export class SocketConnection {
 
    wsConnect() {
     clearInterval(this.timer);
-    this.websocket = new WebSocket('ws://localhost:7777/quiz/');
+    // this.websocket = new WebSocket('ws://localhost:7777/quiz/');
+    this.websocket = new WebSocket('ws://quiz.webmonstr.com:7777/quiz/');
 
     this.websocket.onerror = (evt: any) => {
         this.timer = setTimeout(() => this.wsConnect(),2000);

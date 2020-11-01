@@ -26,6 +26,7 @@ export function CurrentPlayer(props: any) {
   return (
     <>
     <div className="avatar chat-user-profile m-0 mr-3">
+        <img src="images/logo.png" className="mylogo img-fluid" alt="" />
         <img 
         src={image}
         alt="avatar" 

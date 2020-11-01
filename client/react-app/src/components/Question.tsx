@@ -39,8 +39,9 @@ export function Question(props: any) {
   },[]);
   return (
     <div className="question">
-      {question.question} ({question.answers})
+        Вопрос: {question.question} 
     </div>
   );
 }
 
+//({question.answers})
