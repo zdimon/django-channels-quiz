@@ -142,13 +142,14 @@ class RoomMessage(models.Model):
     def save(self, *args, **kwargs):
         
         if not self.pk:
-           super(RoomMessage, self).save(*args, **kwargs)
-           self.send_quiz_message(self.pk)
-           # clearing messages
-           if len(self.text.split(' '))>1: 
-               self.delete()
-           RoomMessage.clear_messages()
-           RoomMessage.check_wrong_answers()
+            super(RoomMessage, self).save(*args, **kwargs)
+            self.send_quiz_message(self.pk)
+            # clearing messages
+            if len(self.text.split(' '))>1: 
+                self.delete()
+            else:
+                RoomMessage.clear_messages()
+                RoomMessage.check_wrong_answers()
         super(RoomMessage, self).save(*args, **kwargs)
 
     @staticmethod
