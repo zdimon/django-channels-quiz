@@ -144,6 +144,7 @@ class RoomMessage(models.Model):
         if not self.pk:
             super(RoomMessage, self).save(*args, **kwargs)
             self.send_quiz_message(self.pk)
+            Player.clear_lazy()
             # clearing messages
             if len(self.text.split(' '))>1: 
                 self.delete()
