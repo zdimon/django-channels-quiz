@@ -7,7 +7,7 @@ admin.site.register(Theme, ThemeAdmin)
 
 class QuestionAdmin(admin.ModelAdmin):
     list_display = ('question', 'theme', 'get_answers', 'lang', 'level', 'is_published')
-    list_filter = ('is_published', 'theme')
+    list_filter = ('is_published', 'theme', 'is_current')
     list_editable = ('is_published',)
 
 admin.site.register(Question, QuestionAdmin)
