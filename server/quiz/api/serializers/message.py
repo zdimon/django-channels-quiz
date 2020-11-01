@@ -17,5 +17,6 @@ class QuizRoomMessageSerializer(serializers.ModelSerializer):
             'is_service',
             'playername',
             'playerimage',
+            'count_wrong',
             'text',
             'created_at']

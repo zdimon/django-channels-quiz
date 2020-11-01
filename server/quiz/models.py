@@ -111,6 +111,10 @@ class RoomMessage(models.Model):
     playername = models.CharField(help_text=_(u"Name"), max_length=100)
     playerimage = models.CharField(help_text=_(u"Name"), max_length=200)
 
+    @property
+    def count_wrong(self):
+        return RoomMessage.objects.filter(is_right=Flase).count()
+
     @staticmethod
     def check_wrong_answers():
 

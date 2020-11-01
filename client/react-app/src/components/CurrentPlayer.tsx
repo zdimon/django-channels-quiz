@@ -37,8 +37,13 @@ export function CurrentPlayer(props: any) {
         alt="avatar" 
         className="avatar-50 " />
     </div>
-  <h5 className="mb-0">{localStorage.getItem('username')}</h5>
-  &nbsp;<h5 className="player-account"> Правильных ответов: {account}</h5>
+  <h5 className="mb-0 username">{localStorage.getItem('username')}</h5>
+  &nbsp;<h5 className="player-account"> 
+  Вы набрали: 
+  <span className="badge badge-primary ml-2">
+  {account}<div></div></span> &nbsp;
+  очков(а). Попытки: <span className="badge badge-primary ml-2">
+    5<div></div></span></h5>
   <div className="float-right">
          
   <button onClick={exit} id="chat-start" className="btn btn btn-primary mt-6">Выйти</button>
