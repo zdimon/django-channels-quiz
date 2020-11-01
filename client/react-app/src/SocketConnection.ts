@@ -1,4 +1,5 @@
 import { Subject } from 'rxjs';
+import { serverName } from './config';
 
 export class SocketConnection {
    private static instance: SocketConnection;
@@ -7,6 +8,7 @@ export class SocketConnection {
    newMessage$: Subject<any>;
    newQuestion$: Subject<any>;
    updateAccount$: Subject<any>;
+   newUser$: Subject<any>;
 
    public static getInstance(): SocketConnection {
         if (!SocketConnection.instance) {
@@ -19,13 +21,14 @@ export class SocketConnection {
     this.newMessage$ = new Subject();
     this.newQuestion$ = new Subject();
     this.updateAccount$ = new Subject();
+    this.newUser$ = new Subject();
     this.wsConnect();
    }
 
    wsConnect() {
     clearInterval(this.timer);
-    // this.websocket = new WebSocket('ws://localhost:7777/quiz/');
-    this.websocket = new WebSocket('ws://quizapi.webmonstr.com:7777/quiz/');
+    //this.websocket = new WebSocket('ws://localhost:7777/quiz/');
+    this.websocket = new WebSocket(`ws://quizapi.webmonstr.com:7777/quiz/`);
 
     this.websocket.onerror = (evt: any) => {
         this.timer = setTimeout(() => this.wsConnect(),2000);
@@ -42,6 +45,9 @@ export class SocketConnection {
         }
         if(msg.type === 'update_account') {
             this.updateAccount$.next(msg);
+        }
+        if(msg.type === 'new_user') {
+            this.newUser$.next(msg);
         }
     }
 

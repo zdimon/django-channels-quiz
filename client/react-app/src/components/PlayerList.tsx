@@ -17,6 +17,12 @@ export function PlayerList(props: any) {
             })             
         }
       });
+      socket.newUser$.subscribe((payload: any) => {
+            let req = new Request();
+            req.get('player/list').then((data) => {
+                setPlayers(data);
+            })             
+      });
   },[])
 
   useEffect(() => {

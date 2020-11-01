@@ -19,6 +19,11 @@ export function CurrentPlayer(props: any) {
       });
   },[])
 
+  const exit = () => {
+    localStorage.removeItem('username');
+    window.location.reload();
+  }
+
   useEffect(() => {
     setImage(localStorage.getItem('image') as string);
     setAccount(localStorage.getItem('account') as unknown as number);
@@ -34,6 +39,12 @@ export function CurrentPlayer(props: any) {
     </div>
   <h5 className="mb-0">{localStorage.getItem('username')}</h5>
   &nbsp;<h5 className="player-account"> Правильных ответов: {account}</h5>
+  <div className="float-right">
+         
+  <button onClick={exit} id="chat-start" className="btn btn btn-primary mt-6">Выйти</button>
+        
+    </div>
+
     </>
   );
 }

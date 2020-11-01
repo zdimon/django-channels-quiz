@@ -208,6 +208,18 @@ class Player(models.Model):
     account = models.IntegerField(default=0)
     activity = models.IntegerField(default=0)
 
+    def save(self, *args, **kwargs):
+        
+        if not self.pk:
+            channel_layer = get_channel_layer()
+            from connection.models import SocketConnection
+            for con in SocketConnection.objects.all():
+                payload =  { \
+                            'type': 'new_user', \
+                        }        
+                async_to_sync(channel_layer.send)(con.sid, payload)
+        super(Player, self).save(*args, **kwargs)
+
     def add_account(self):
         self.account += 1
         self.save()
