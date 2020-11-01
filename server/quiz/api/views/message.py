@@ -44,13 +44,16 @@ class CreateQuizMessageView(APIView):
         request_body=MessageRequestSerializer,
         responses={200: QuizRoomMessageSerializer, 401: NoAuthSerializer} )
     def post(self, request): 
-        player = Player.objects.get(name=request.data['playername'])
-        player.activity = time.time()
-        player.save()
-        obj = RoomMessage()
-        obj.playername = request.data['playername']
-        obj.text = request.data['message']
-        obj.check_answer()
-        obj.playerimage = player.sticker.get_url
-        obj.save()
-        return Response(QuizRoomMessageSerializer(obj).data)
+        try:
+            player = Player.objects.get(name=request.data['playername'])
+            player.activity = time.time()
+            player.save()
+            obj = RoomMessage()
+            obj.playername = request.data['playername']
+            obj.text = request.data['message']
+            obj.check_answer()
+            obj.playerimage = player.sticker.get_url
+            obj.save()
+            return Response(QuizRoomMessageSerializer(obj).data)
+        except:
+            return Response({'status': 1, 'message': 'No user!'})
