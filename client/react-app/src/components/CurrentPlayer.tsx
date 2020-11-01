@@ -20,8 +20,11 @@ export function CurrentPlayer(props: any) {
       });
 
       socket.newMessage$.subscribe((payload: any) => {
-       
           setCount(payload.count_wrong);
+        });
+
+        socket.newQuestion$.subscribe((payload: any) => {
+          setCount(4);
         });
 
   },[])
