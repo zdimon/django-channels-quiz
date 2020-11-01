@@ -19,7 +19,8 @@ class RoomMessageAdmin(admin.ModelAdmin):
         'is_service',
         'text',
         'created_at',
-        'playername'
+        'playername',
+        'playerimage'
     )
 
 admin.site.register(RoomMessage, RoomMessageAdmin)
@@ -48,7 +49,8 @@ class PlayerAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'sticker',
-        'account'
+        'account',
+        'activity'
     )
     
 

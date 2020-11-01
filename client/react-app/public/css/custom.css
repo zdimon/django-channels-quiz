@@ -111,3 +111,8 @@ img.item-photoline.first:hover {
     opacity: 1;
     filter: sepia(0);
 }
+
+.player-account {
+    padding-left: 10px;
+    display: inline-block;
+}

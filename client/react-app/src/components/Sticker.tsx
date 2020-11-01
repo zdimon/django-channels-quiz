@@ -8,6 +8,7 @@ export function Sticker(props:any) {
   }
   return (
     <img width="50" 
+    alt=""
     onClick={() => select(props.item.id)} 
     src={props.item.get_url} />
   );

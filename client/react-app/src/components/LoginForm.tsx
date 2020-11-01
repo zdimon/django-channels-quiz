@@ -8,13 +8,13 @@ export function LoginForm() {
   const [stickers, setStickers] = useState([]);
   const [sticker, setSticker] = useState(0);
   const [username, setUsername] = useState('');
-  const req = new Request();
+  
   var handleChangeUsername = (evt:any) => {
     setUsername(evt.target.value);
   }
 
   useEffect(() => {
-    
+    let req = new Request();
     req.get('sticker/list').then((data) => {
        setStickers(data);
     })
@@ -29,8 +29,11 @@ export function LoginForm() {
       sticker_id: sticker,
       name: username
     }
+    let req = new Request();
     req.post('player/join',data).then((data) => {
       localStorage.setItem('username', username);
+      localStorage.setItem('image', data.sticker.get_url);
+      localStorage.setItem('account', data.account);
       window.location.reload();
     })
   }

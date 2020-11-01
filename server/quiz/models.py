@@ -12,6 +12,7 @@ from django.utils.html import mark_safe
 import random
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
+import time
 
 class Theme(models.Model):
     """
@@ -108,6 +109,21 @@ class RoomMessage(models.Model):
     text = models.TextField(verbose_name=_(u'Text'))
     created_at = models.DateTimeField(auto_now_add=True)
     playername = models.CharField(help_text=_(u"Name"), max_length=100)
+    playerimage = models.CharField(help_text=_(u"Name"), max_length=200)
+
+    @staticmethod
+    def check_wrong_answers():
+
+        if RoomMessage.objects.filter(is_right=False).count()>4:
+            channel_layer = get_channel_layer()
+            from connection.models import SocketConnection
+            RoomMessage.objects.all().delete()
+            Question.make_rundom()
+            for connection in SocketConnection.objects.all():
+                payload =  { \
+                        'type': 'new_question', \
+                       }        
+                async_to_sync(channel_layer.send)(connection.sid, payload)
 
     def check_answer(self):
         answer = Question.get_current_question()
@@ -126,14 +142,14 @@ class RoomMessage(models.Model):
            self.send_quiz_message(self.pk)
            # clearing messages
            RoomMessage.clear_messages()
+           RoomMessage.check_wrong_answers()
         super(RoomMessage, self).save(*args, **kwargs)
 
     @staticmethod
     def clear_messages():
         cnt = RoomMessage.objects.all().count()
-        if cnt > 10:
-            for m in RoomMessage.objects.all().order_by('id')[10:]:
-                print(m)
+        if cnt > 5:
+            for m in RoomMessage.objects.all().order_by('-id')[5:]:
                 channel_layer = get_channel_layer()
                 from quiz.api.serializers.message import QuizRoomMessageSerializer
                 from connection.models import SocketConnection
@@ -143,7 +159,7 @@ class RoomMessage(models.Model):
                                 'message': QuizRoomMessageSerializer(m).data \
                             }        
                     async_to_sync(channel_layer.send)(con.sid, payload)
-        
+                m.delete()
         
 
     @app.task
@@ -190,6 +206,7 @@ class Player(models.Model):
     name = models.CharField(help_text=_(u"Name"), max_length=100, unique=True)
     sticker = models.ForeignKey(Sticker, verbose_name=_(u'sticker'), on_delete=models.SET_NULL, null=True, blank=True)
     account = models.IntegerField(default=0)
+    activity = models.IntegerField(default=0)
 
     def add_account(self):
         self.account += 1
@@ -203,3 +220,8 @@ class Player(models.Model):
                         'message': PlayerSerializer(self).data \
                        }        
             async_to_sync(channel_layer.send)(con.sid, payload)
+
+    @staticmethod
+    def clear_lazy():
+        tm = time.time()-(60*5)
+        Player.objects.filter(activity__lt = tm).delete()
