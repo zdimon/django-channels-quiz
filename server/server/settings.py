@@ -148,5 +148,5 @@ REST_FRAMEWORK = {
 
 FIXTURES_PATH = os.path.join(BASE_DIR, '../fixtures')
 
-from local import *
+from .local import *
 
