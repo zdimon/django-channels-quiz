@@ -6,17 +6,24 @@ const socket = SocketConnection.getInstance();
 export function CurrentPlayer(props: any) {
   const [image, setImage] = useState('');
   const [account, setAccount] = useState(0);
+  const [count, setCount] = useState(5);
 
   useEffect(() => {
     socket.updateAccount$.subscribe((payload: any) => {
       console.log('update');
         if(payload.message.name === localStorage.getItem('username')) {
-            console.log('asdqwadadsa');
+            // console.log('asdqwadadsa');
             // let newaccount = account+1;
             setAccount(payload.message.account); 
             localStorage.setItem('account',payload.message.account);           
         }
       });
+
+      socket.newMessage$.subscribe((payload: any) => {
+       
+          setCount(payload.count_wrong);
+        });
+
   },[])
 
   const exit = () => {
@@ -43,7 +50,7 @@ export function CurrentPlayer(props: any) {
   <span className="badge badge-primary ml-2">
   {account}<div></div></span> &nbsp;
   очков(а). Попытки: <span className="badge badge-primary ml-2">
-    5<div></div></span></h5>
+    {count}<div></div></span></h5>
   <div className="float-right">
          
   <button onClick={exit} id="chat-start" className="btn btn btn-primary mt-6">Выйти</button>
