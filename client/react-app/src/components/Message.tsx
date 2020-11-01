@@ -14,7 +14,7 @@ export function Message(props: any) {
     <div className="chat-detail">
        <div className="chat-message">
           <p>{ props.message.text } 
-          {`${props.message.is_right ? "ВЕРНО!" : ""}`}
+          {`${props.message.is_right ? " - ВЕРНО! +1" : ""}`}
           </p>
        </div>
     </div>
