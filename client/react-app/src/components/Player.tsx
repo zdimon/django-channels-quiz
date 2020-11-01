@@ -8,7 +8,7 @@ export function Player(props: any) {
       <div className="media-height p-1">
         <div className="media align-items-center mb-4">
             <div className="iq-profile-avatar status-online">
-            <span className="badge badge-success ml-2">{props.user.account}<div></div></span>
+            <span className="badge badge-primary ml-2">{props.user.account}<div></div></span>
               <img 
               className="rounded-circle avatar-50" 
               src={props.user.sticker.get_url} alt="" />

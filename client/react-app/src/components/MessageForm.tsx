@@ -29,6 +29,7 @@ export function MessageForm() {
   return (
     <>
     <input 
+        autoFocus
         type="text" 
         className="form-control mr-3" 
         placeholder="Введите ответ на вопрос"

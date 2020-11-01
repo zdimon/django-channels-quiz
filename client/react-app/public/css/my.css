@@ -5,6 +5,8 @@
     font-size: 16px;
     color: brown;
     line-height: 16px;
+    width: 100%;
+    text-align: center;
 }
 
 .stickers {
@@ -21,4 +23,14 @@
 
 .float-right {
     padding-left: 20px;
+}
+
+#messageFormBlock {
+    padding-bottom: 10px;
+}
+
+#messageFormBlock input {
+    background-color: white;
+    border: 1px solid #2AA3FB;
+
 }

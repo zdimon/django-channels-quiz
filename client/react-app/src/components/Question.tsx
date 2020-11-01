@@ -40,7 +40,7 @@ export function Question(props: any) {
   },[]);
   return (
     <div className="question">
-        Тема: {question.theme.name} Вопрос: {question.question} 
+        Тема: {question.theme.name}. Вопрос: {question.question} 
     </div>
   );
 }
