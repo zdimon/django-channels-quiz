@@ -29,7 +29,8 @@ export function Question(props: any) {
 
   const [question, setQuestion] = useState({
     question: '',
-    answers: ''
+    answers: '',
+    theme: {name: ''}
   });
   useEffect(() => {
     const req = new Request();
@@ -39,7 +40,7 @@ export function Question(props: any) {
   },[]);
   return (
     <div className="question">
-        Вопрос: {question.question} 
+        Тема: {question.theme.name} Вопрос: {question.question} 
     </div>
   );
 }
