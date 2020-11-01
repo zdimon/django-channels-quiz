@@ -13,7 +13,9 @@ export function Message(props: any) {
     </div>
     <div className="chat-detail">
        <div className="chat-message">
-          <p>{ props.message.text } {props.message.is_right}</p>
+          <p>{ props.message.text } 
+          {`${props.message.is_right ? "ВЕРНО!" : ""}`}
+          </p>
        </div>
     </div>
   </div>
