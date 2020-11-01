@@ -50,7 +50,7 @@ export function CurrentPlayer(props: any) {
   <span className="badge badge-primary ml-2">
   {account}<div></div></span> &nbsp;
   очков(а). Попытки: <span className="badge badge-primary ml-2">
-    {count}<div></div></span></h5>
+    {5 - count}<div></div></span></h5>
   <div className="float-right">
          
   <button onClick={exit} id="chat-start" className="btn btn btn-primary mt-6">Выйти</button>
