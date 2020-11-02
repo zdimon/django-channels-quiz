@@ -52,8 +52,8 @@ export function CurrentPlayer(props: any) {
   Вы набрали: 
   <span className="badge badge-primary ml-2">
   {account}<div></div></span> &nbsp;
-  очков(а). Попытки: <span className="badge badge-primary ml-2">
-    {5 - count}<div></div></span></h5>
+  очков(а). <span className="tries">Попытки: <span className="badge badge-primary ml-2">
+    {5 - count}<div></div></span></span></h5>
   <div className="float-right">
          
   <button onClick={exit} id="chat-start" className="btn btn btn-primary mt-6">Выйти</button>

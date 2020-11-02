@@ -38,3 +38,19 @@
 .username {
     font-weight: bold;
 }
+
+@media (max-width:800px) {
+
+    .username {
+        display: none;
+    }
+
+    .avatar {
+        display: none;
+    }
+
+    .tries {
+        display: none;
+    }
+
+}
