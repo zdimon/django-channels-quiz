@@ -5,3 +5,5 @@ cd server
 ./manage.py migrate
 ./manage.py load_quiz
 ./manage.py load_smiles_stickers
+cd ../client/react
+npm install
