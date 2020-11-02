@@ -1,0 +1,5 @@
+./bin/build_front
+git add .
+git commit -m 'deploy'
+git push
+ssh zdimon@quiz.webmonstr.com 'cd django-channels-quiz; git pull'

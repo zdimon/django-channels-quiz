@@ -16,7 +16,7 @@
     connect = () => {
         
         clearInterval(timer);
-        webSocket = new WebSocket('ws://localhost:7777/card/');
+        webSocket = new WebSocket('ws://localhost:7777/qui');
 
         webSocket.onerror = (evt) => {
             timer = setTimeout(connect,1000);

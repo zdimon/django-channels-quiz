@@ -64,3 +64,15 @@ class QuizConsumer(WebsocketConsumer):
             'message': event['message'] \
         }
         self.send(text_data=json.dumps(message))
+
+    def new_question(self,event):
+        message = {  \
+            'type': 'new_question', \
+        }
+        self.send(text_data=json.dumps(message))
+
+    def new_user(self,event):
+        message = {  \
+            'type': 'new_user', \
+        }
+        self.send(text_data=json.dumps(message))

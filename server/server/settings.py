@@ -148,4 +148,5 @@ REST_FRAMEWORK = {
 
 FIXTURES_PATH = os.path.join(BASE_DIR, '../fixtures')
 
-DOMAIN_URL = 'http://localhost:7777'
+from .local import *
+

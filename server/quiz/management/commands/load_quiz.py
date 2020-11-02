@@ -4,6 +4,7 @@ from quiz.models import Theme, Question
 from server.settings import FIXTURES_PATH
 import os
 import json
+import sys
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
@@ -20,7 +21,11 @@ class Command(BaseCommand):
                 for q in js['questions']:
                     question = Question()
                     question.theme = t
-                    question.question = q['question']
+                    quest = q['question']
+                    if quest.find('Ответы для викторин:') > -1:
+                        quest = quest[:quest.find('Ответы для викторин:')]
+                        #sys.exit(quest)
+                    question.question = quest
                     #q['answer'] = q['answer'].replace(u'Другое','').strip()
                     ans = q['answer'].upper()
                     ans = ans.replace('"','')

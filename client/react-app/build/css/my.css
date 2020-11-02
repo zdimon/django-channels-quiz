@@ -1,0 +1,56 @@
+.question {
+    padding-left: 10px;
+    padding-top: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    color: brown;
+    line-height: 16px;
+    width: 100%;
+    text-align: center;
+}
+
+.stickers {
+    padding: 10px;
+}
+
+.sticker-active {
+    border: 2px solid red;
+}
+
+.mylogo {
+    padding-right: 15px;
+}
+
+.float-right {
+    padding-left: 20px;
+}
+
+#messageFormBlock {
+    padding-bottom: 10px;
+}
+
+#messageFormBlock input {
+    background-color: white;
+    border: 1px solid #2AA3FB;
+
+}
+
+.username {
+    font-weight: bold;
+}
+
+@media (max-width:800px) {
+
+    .username {
+        display: none;
+    }
+
+    .avatar {
+        display: none;
+    }
+
+    .tries {
+        display: none;
+    }
+
+}

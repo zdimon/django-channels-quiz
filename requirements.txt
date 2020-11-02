@@ -2,7 +2,7 @@ wheel
 Django==3.0.7
 djangorestframework==3.11.1
 drf-yasg==1.17.1
-channels
+channels==2.4.0
 requests
 Pillow==7.1.2
 redis==3.2.0

@@ -7,7 +7,7 @@ admin.site.register(Theme, ThemeAdmin)
 
 class QuestionAdmin(admin.ModelAdmin):
     list_display = ('question', 'theme', 'get_answers', 'lang', 'level', 'is_published')
-    list_filter = ('is_published', 'theme')
+    list_filter = ('is_published', 'theme', 'is_current')
     list_editable = ('is_published',)
 
 admin.site.register(Question, QuestionAdmin)
@@ -19,25 +19,29 @@ class RoomMessageAdmin(admin.ModelAdmin):
         'is_service',
         'text',
         'created_at',
-        'playername'
+        'playername',
+        'playerimage'
     )
 
 admin.site.register(RoomMessage, RoomMessageAdmin)
 
 
 
-class SmileAdmin(admin.ModelAdmin):
-    list_display = (
-        'image',
-    )
+# class SmileAdmin(admin.ModelAdmin):
+#     list_display = (
+#         'image',
+#     )
 
-admin.site.register(Smile, SmileAdmin)
+# admin.site.register(Smile, SmileAdmin)
 
 
 class StickerAdmin(admin.ModelAdmin):
     list_display = (
         'get_image_tag',
     )
+    def image_tag(self):
+        from django.utils.html import escape
+        return u'<img src="%s" />' % escape(self.image.url)
 
 admin.site.register(Sticker, StickerAdmin)
 
@@ -45,7 +49,8 @@ class PlayerAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'sticker',
-        'account'
+        'account',
+        'activity'
     )
     
 

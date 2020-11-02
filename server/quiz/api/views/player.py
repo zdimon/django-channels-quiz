@@ -7,6 +7,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from quiz.api.serializers.question import QuestionSerializer
+import time
 
 class PlayerListView(generics.ListAPIView):
     '''
@@ -17,7 +18,7 @@ class PlayerListView(generics.ListAPIView):
 
     '''
     serializer_class = PlayerSerializer
-    queryset = Player.objects.all().order_by('-id')
+    queryset = Player.objects.all().order_by('-account')
 
 class JoinUserView(APIView):
     '''
@@ -46,8 +47,10 @@ class JoinUserView(APIView):
             player = Player()
             player.name = request.data['name']
             player.sticker = sticker
+            player.activity = time.time()
             player.save()
+            Player.clear_lazy()
             
-            return Response(QuestionSerializer(Question.get_current_question()).data)
+            return Response(PlayerSerializer(player).data)
 
         
