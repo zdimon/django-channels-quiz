@@ -1,0 +1,14 @@
+.question {
+    padding-left: 10px;
+    font-weight: bold;
+    font-size: 18px;
+    color: brown;
+}
+
+#loginForm {
+    display: none;
+}
+
+.active-sticker {
+    border: 1px solid red;
+}
